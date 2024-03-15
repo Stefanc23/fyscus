@@ -10,7 +10,7 @@ import {
 import cx from 'clsx';
 import { TbMoonStars, TbSun } from 'react-icons/tb';
 
-import classes from '@/components/ui/ThemeSwitcher/ThemeSwitcher.module.css';
+import classes from './ThemeSwitcher.module.css';
 
 const ThemeSwitcher = () => {
   const theme = useMantineTheme();
