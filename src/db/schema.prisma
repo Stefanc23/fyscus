@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  image     String?  @db.Text()
+  authId    String   @map("auth_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  accounts     Account[]
+  categories   Category[]
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  name      String
+  balance   BigInt
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  transactions Transaction[]
+
+  @@map("accounts")
+}
+
+model Category {
+  id        String                  @id @default(uuid())
+  name      String
+  type      TransactionCategoryType @default(EXPENSE)
+  icon      String?
+  userId    String                  @map("user_id")
+  createdAt DateTime                @default(now()) @map("created_at")
+  updatedAt DateTime                @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+enum TransactionCategoryType {
+  EXPENSE
+  INCOME
+}
+
+model Transaction {
+  id         String   @id @default(uuid())
+  amount     BigInt
+  note       String?  @db.Text
+  userId     String   @map("user_id")
+  accountId  String   @map("account_id")
+  categoryId String   @map("category_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user     User     @relation(fields: [userId], references: [id])
+  account  Account  @relation(fields: [accountId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@map("transactions")
+}
