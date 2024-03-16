@@ -18,11 +18,24 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link
+          rel="icon"
+          href="/icon?<generated>"
+          type="image/<generated>"
+          sizes="<generated>"
+        />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-icon?<generated>"
+          type="image/<generated>"
+          sizes="<generated>"
+        />
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
-      <body>
+      <body suppressHydrationWarning={true}>
         <MantineProvider theme={theme} defaultColorScheme="dark">
           {children}
         </MantineProvider>

@@ -13,7 +13,7 @@ model User {
   name      String
   email     String   @unique
   image     String?  @db.Text()
-  authId    String   @map("auth_id")
+  authId    String   @unique @map("auth_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

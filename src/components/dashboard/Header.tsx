@@ -1,19 +1,9 @@
-import { Anchor, Group } from '@mantine/core';
+import { Group } from '@mantine/core';
 
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher/ThemeSwitcher';
 
 import Breadcrumbs from './Breadcrumbs';
 import Profile from './Profile';
-
-const items = [
-  { title: 'Mantine', href: '#' },
-  { title: 'Mantine hooks', href: '#' },
-  { title: 'use-id', href: '#' },
-].map((item, index) => (
-  <Anchor href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 const Header = () => {
   return (

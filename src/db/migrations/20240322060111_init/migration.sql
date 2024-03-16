@@ -56,6 +56,9 @@ CREATE TABLE "transactions" (
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "users_auth_id_key" ON "users"("auth_id");
+
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
