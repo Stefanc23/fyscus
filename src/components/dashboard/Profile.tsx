@@ -2,16 +2,19 @@ import { Avatar, Group, Text } from '@mantine/core';
 import Link from 'next/link';
 import { FaUserSecret } from 'react-icons/fa';
 
-const Profile = () => {
+type ProfileProps = {
+  name: string;
+  image?: string;
+};
+
+const Profile = ({ name, image }: ProfileProps) => {
   return (
     <Link href="/dashboard/profile">
       <Group gap="xs">
         <Text size="sm" className="hidden md:block">
-          Anonymous User
+          Hi, {name.split(' ')[0]}!
         </Text>
-        <Avatar>
-          <FaUserSecret size="1.5rem" />
-        </Avatar>
+        <Avatar>{!image && <FaUserSecret size="1.5rem" />}</Avatar>
       </Group>
     </Link>
   );

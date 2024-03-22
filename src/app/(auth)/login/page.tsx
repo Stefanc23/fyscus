@@ -6,9 +6,9 @@ import {
   Divider,
   Flex,
   Group,
+  Loader,
   Modal,
   Paper,
-  PaperProps,
   PasswordInput,
   Stack,
   Text,
@@ -17,15 +17,24 @@ import {
 import { useForm, zodResolver } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { z } from 'zod';
 
+import ErrorMessage from '@/components/ui/ErrorMessage';
 import GoogleButton from '@/components/ui/GoogleButton';
+import { createClient } from '@/lib/supabase/client';
 import { loginSchema } from '@/lib/zod/validations';
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-const Login = (props: PaperProps) => {
+const Login = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
   const [opened, { open, close }] = useDisclosure(false);
+
+  const router = useRouter();
 
   const loginForm = useForm({
     initialValues: {
@@ -36,6 +45,30 @@ const Login = (props: PaperProps) => {
     validate: zodResolver(loginSchema),
   });
 
+  const loginOnSubmit = loginForm.onSubmit(async (values) => {
+    setError('');
+    setIsSubmitting(true);
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/login`,
+      {
+        method: 'POST',
+        body: JSON.stringify(values),
+      },
+    );
+
+    const data = await response.json();
+
+    setIsSubmitting(false);
+
+    if (data.error) {
+      console.log(data.error);
+      setError('Oops! Something went wrong.');
+    } else {
+      router.replace('/dashboard');
+    }
+  });
+
   const resetPasswordForm = useForm({
     initialValues: {
       email: '',
@@ -43,6 +76,17 @@ const Login = (props: PaperProps) => {
 
     validate: zodResolver(loginSchema.pick({ email: true })),
   });
+
+  const loginWithGoogle = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
+      },
+    });
+  };
 
   return (
     <>
@@ -66,70 +110,79 @@ const Login = (props: PaperProps) => {
           </Stack>
         </form>
       </Modal>
-      <Paper radius="md" p="xl" withBorder {...props}>
-        <Text size="lg" fw={500}>
-          Welcome to Fyscus, login with
-        </Text>
+      <div className="flex flex-col space-y-6">
+        {<ErrorMessage>{error}</ErrorMessage>}
+        <Paper radius="md" p="xl" withBorder>
+          <Text size="lg" fw={500}>
+            Welcome to Fyscus, login with
+          </Text>
 
-        <GoogleButton radius="md" fullWidth mt={16}>
-          Google
-        </GoogleButton>
+          <GoogleButton radius="md" fullWidth mt={16} onClick={loginWithGoogle}>
+            Google
+          </GoogleButton>
 
-        <Divider
-          label="Or continue with email"
-          labelPosition="center"
-          my="lg"
-        />
+          <Divider
+            label="Or continue with email"
+            labelPosition="center"
+            my="lg"
+          />
 
-        <form onSubmit={loginForm.onSubmit(() => {})}>
-          <Stack>
-            <TextInput
-              required
-              label="Email"
-              placeholder="hello@world.com"
-              value={loginForm.values.email}
-              onChange={(event) =>
-                loginForm.setFieldValue('email', event.currentTarget.value)
-              }
-              error={loginForm.errors.email && 'Invalid email'}
-              radius="md"
-            />
+          <form onSubmit={loginOnSubmit}>
+            <Stack>
+              <TextInput
+                required
+                label="Email"
+                placeholder="hello@world.com"
+                value={loginForm.values.email}
+                onChange={(event) =>
+                  loginForm.setFieldValue('email', event.currentTarget.value)
+                }
+                error={loginForm.errors.email && 'Invalid email'}
+                radius="md"
+              />
 
-            <PasswordInput
-              required
-              label="Password"
-              placeholder="Your password"
-              value={loginForm.values.password}
-              onChange={(event) =>
-                loginForm.setFieldValue('password', event.currentTarget.value)
-              }
-              error={
-                loginForm.errors.password &&
-                'Password should include at least 6 characters'
-              }
-              radius="md"
-            />
+              <PasswordInput
+                required
+                label="Password"
+                placeholder="Your password"
+                value={loginForm.values.password}
+                onChange={(event) =>
+                  loginForm.setFieldValue('password', event.currentTarget.value)
+                }
+                error={
+                  loginForm.errors.password &&
+                  'Password should include at least 6 characters'
+                }
+                radius="md"
+              />
 
-            <Flex justify="end">
-              <Anchor onClick={open} fz="xs">
-                Forgot Password?
-              </Anchor>
-            </Flex>
-          </Stack>
+              <Flex justify="end">
+                <Anchor onClick={open} fz="xs">
+                  Forgot Password?
+                </Anchor>
+              </Flex>
+            </Stack>
 
-          <Group justify="space-between" mt="xl" gap="xl">
-            <Text size="xs">
-              Don&apos;t have an account yet?{' '}
-              <Anchor component={Link} href="/register">
-                Register
-              </Anchor>
-            </Text>
-            <Button type="submit" radius="md">
-              Login
-            </Button>
-          </Group>
-        </form>
-      </Paper>
+            <Group justify="space-between" mt="xl" gap="xl">
+              <Text size="xs">
+                Don&apos;t have an account yet?{' '}
+                <Anchor component={Link} href="/register">
+                  Register
+                </Anchor>
+              </Text>
+              <Button
+                type="submit"
+                radius="md"
+                w="120"
+                rightSection={isSubmitting && <Loader size="xs" />}
+                disabled={isSubmitting}
+              >
+                Login
+              </Button>
+            </Group>
+          </form>
+        </Paper>
+      </div>
     </>
   );
 };
