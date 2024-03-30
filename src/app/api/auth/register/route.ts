@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
 import { registerSchema } from '@/lib/zod/validations';
@@ -47,7 +47,10 @@ export const POST = async (request: NextRequest) => {
     });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status },
+      );
     }
 
     // create user profile

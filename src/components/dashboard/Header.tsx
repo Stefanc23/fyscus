@@ -12,8 +12,17 @@ const Header = async () => {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/user?authId=${encodeURIComponent(user?.id ?? '')}`,
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/user?authId=${encodeURIComponent(user?.id ?? '')}`,
+    {
+      headers: {
+        Authorization: `${session?.token_type} ${session?.access_token}`,
+      },
+    },
   );
 
   const data = await response.json();

@@ -29,35 +29,40 @@ export const GET = async (request: Request) => {
         },
       },
     );
+
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      // check if user already exists
-      const email = data.user.email as string;
-      const { userAlreadyExists, error: checkError } = await checkIfUserExists({
-        email,
-      });
-      if (checkError) {
-        return NextResponse.json({ error: checkError }, { status: 500 });
-      }
-      if (!userAlreadyExists) {
-        // create user profile data if it doesn't exist yet
-        const authId = data.user.id as string;
-        const name = data.user.user_metadata.name;
-        const { error: prismaError } = await createUser({
-          name,
-          email,
-          authId,
-        });
-
-        if (prismaError) {
-          return NextResponse.json({ error: prismaError }, { status: 500 });
-        }
-      }
-
-      return NextResponse.redirect(`${origin}${next}`);
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status },
+      );
     }
+
+    // check if user already exists
+    const email = data.user.email as string;
+    const { userAlreadyExists, error: checkError } = await checkIfUserExists({
+      email,
+    });
+    if (checkError) {
+      return NextResponse.json({ error: checkError }, { status: 500 });
+    }
+    if (!userAlreadyExists) {
+      // create user profile data if it doesn't exist yet
+      const authId = data.user.id as string;
+      const name = data.user.user_metadata.name;
+      const { error: prismaError } = await createUser({
+        name,
+        email,
+        authId,
+      });
+
+      if (prismaError) {
+        return NextResponse.json({ error: prismaError }, { status: 500 });
+      }
+    }
+
+    return NextResponse.redirect(`${origin}${next}`);
   }
 
-  // return the user to an error page with instructions
   return NextResponse.redirect(`${origin}/login`);
 };

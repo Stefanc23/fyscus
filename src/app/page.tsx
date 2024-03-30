@@ -12,7 +12,7 @@ const Home = async () => {
   return (
     <main className="w-full h-dvh flex flex-col justify-center items-center gap-3">
       <Text>Coming Soon</Text>
-      <Title order={1} c="deep-sapphire">
+      <Title order={1} c="deep-sapphire" ta="center">
         Fyscus: Finance Management App
       </Title>
       <ThemeSwitcher />
