@@ -1,30 +1,54 @@
-import { Divider } from '@mantine/core';
+'use client';
+
+import { ActionIcon, Divider } from '@mantine/core';
+import clsx from 'clsx';
+import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
+import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 
-import SidebarItem from './SidebarItem';
-
-const menu = [
-  { label: 'Dashboard', href: '/dashboard' },
-  { label: 'My Accounts', href: '/dashboard/accounts' },
-  { label: 'Categories', href: '/dashboard/categories' },
-  { label: 'Transactions', href: '/dashboard/transactions' },
-  { label: 'Budget', href: '/dashboard/budgets' },
-  { label: 'My Portfolio', href: '/dashboard/investments' },
-];
+import Logo from '@/app/icon.png';
+import SidebarItem from '@/components/dashboard/SidebarItem';
+import menu from '@/constants/menu';
 
 const Sidebar = () => {
+  const [expanded, setExpanded] = useState(true);
+
+  const icon = !expanded ? (
+    <FaChevronCircleRight fontSize="28px" />
+  ) : (
+    <FaChevronCircleLeft fontSize="28px" />
+  );
+
   return (
-    <aside className="p-8 w-[300px] h-dvh shadow-md dark:shadow-gray-700 bg-zinc-100 dark:bg-gray-900">
+    <aside
+      className={clsx(
+        'hidden lg:block relative h-dvh px-5 py-8 shadow-md dark:shadow-gray-700 bg-zinc-100 dark:bg-gray-900 transition-all',
+        expanded && 'w-[300px]',
+        !expanded && 'w-[60px]',
+      )}
+    >
+      <div className="absolute top-1/2 -right-[10px] -translate-y-1/2">
+        <ActionIcon
+          variant="transparent"
+          onClick={() => setExpanded((prev) => !prev)}
+        >
+          {icon}
+        </ActionIcon>
+      </div>
       <Link href="/dashboard" className="flex justify-center items-center">
-        <p className="text-4xl text-primary-900 dark:text-primary-300">
-          Fyscus
-        </p>
+        <Image
+          src={Logo}
+          alt="logo"
+          width={expanded ? 200 : 20}
+          height={expanded ? 200 : 20}
+        />
       </Link>
       <Divider my="xl" />
-      <nav className="mt-16">
+      <nav>
         <ul className="space-y-6">
           {menu.map((props) => (
-            <SidebarItem key={props.href} {...props} />
+            <SidebarItem key={props.href} {...props} expanded={expanded} />
           ))}
         </ul>
       </nav>

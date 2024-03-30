@@ -1,7 +1,6 @@
 import { Group } from '@mantine/core';
 
 import Breadcrumbs from '@/components/dashboard/Breadcrumbs';
-import LogoutButton from '@/components/dashboard/LogoutButton';
 import Profile from '@/components/dashboard/Profile';
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher/ThemeSwitcher';
 import { createClient } from '@/lib/supabase/server';
@@ -25,7 +24,6 @@ const Header = async () => {
       <Breadcrumbs />
       <Group gap="xs">
         <ThemeSwitcher />
-        <LogoutButton />
         <Profile name={name} image={image} />
       </Group>
     </header>

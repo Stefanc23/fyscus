@@ -1,6 +1,7 @@
 import { Flex } from '@mantine/core';
 import { redirect } from 'next/navigation';
 
+import BottomNavigation from '@/components/dashboard/BottomNavigation';
 import Header from '@/components/dashboard/Header';
 import Sidebar from '@/components/dashboard/Sidebar';
 import { createClient } from '@/lib/supabase/server';
@@ -19,9 +20,10 @@ const DashboardLayout = async ({
   return (
     <Flex>
       <Sidebar />
-      <div className="w-full">
+      <div className="w-full relative">
         <Header />
         <main className="p-8 h-dvh">{children}</main>
+        <BottomNavigation />
       </div>
     </Flex>
   );

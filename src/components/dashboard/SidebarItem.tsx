@@ -6,11 +6,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 type SidebarItemProps = {
+  icon: any;
   label: string;
   href: string;
+  expanded: boolean;
 };
 
-const SidebarItem = ({ label, href }: SidebarItemProps) => {
+const SidebarItem = ({ icon, label, href, expanded }: SidebarItemProps) => {
   const pathname = usePathname();
   const active = pathname === href;
 
@@ -19,14 +21,14 @@ const SidebarItem = ({ label, href }: SidebarItemProps) => {
       <Link
         href={href}
         className={clsx(
-          'transition-colors',
+          'flex items-center space-x-4 transition-colors',
           active && 'text-primary-900 dark:text-primary-300',
           !active &&
             'text-gray-900 dark:text-gray-100 hover:text-primary-300 dark:hover:text-primary-300',
         )}
       >
-        <Text></Text>
-        {label}
+        {icon}
+        {expanded && <Text>{label}</Text>}
       </Link>
     </li>
   );
