@@ -9,6 +9,19 @@ const authValidations = {
     .max(20, { message: 'Password is too long' }),
 };
 
+const accountValidations = {
+  name: z
+    .string()
+    .min(1, { message: 'Name is required' })
+    .max(191, { message: 'Name can only be up to 191 characters long' }),
+  balance: z
+    .string()
+    .transform((val) => parseFloat(val))
+    .pipe(z.number().nonnegative())
+    .transform((val) => val.toString()),
+  userId: z.string().length(36),
+};
+
 // schemas
 export const registerSchema = z
   .object({
@@ -22,3 +35,5 @@ export const registerSchema = z
   });
 
 export const loginSchema = z.object(authValidations);
+
+export const accountSchema = z.object(accountValidations);

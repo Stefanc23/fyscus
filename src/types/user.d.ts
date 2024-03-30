@@ -4,4 +4,7 @@ export type UserData = {
   email: string;
   image?: string;
   authId: string;
+  defaultCurrency?: 'IDR' | 'USD';
+  createdAt?: string;
+  updatedAt?: string;
 };

@@ -14,6 +14,7 @@ model User {
   email     String   @unique
   image     String?  @db.Text()
   authId    String   @unique @map("auth_id")
+  defaultCurrency Currency @default(IDR) @map("default_currency")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -27,7 +28,7 @@ model User {
 model Account {
   id        String   @id @default(uuid())
   name      String
-  balance   BigInt
+  balance   Decimal
   userId    String   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -62,8 +63,10 @@ enum TransactionCategoryType {
 
 model Transaction {
   id         String   @id @default(uuid())
-  amount     BigInt
+  amount     Decimal
   note       String?  @db.Text
+  storedCurrency Currency @default(IDR) @map("stored_currency")
+  exchangeRateUsed Decimal? @map("exchange_rate_used")
   userId     String   @map("user_id")
   accountId  String   @map("account_id")
   categoryId String   @map("category_id")
@@ -75,4 +78,9 @@ model Transaction {
   category Category @relation(fields: [categoryId], references: [id])
 
   @@map("transactions")
+}
+
+enum Currency {
+  IDR
+  USD
 }

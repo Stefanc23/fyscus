@@ -15,7 +15,6 @@ export const GET = async (request: NextRequest) => {
     }
 
     const { user, error: prismaError } = await getUserByAuthId({ authId });
-
     if (prismaError || !user) {
       return NextResponse.json({ error: prismaError }, { status: 500 });
     }
