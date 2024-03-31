@@ -1,7 +1,7 @@
 import { Group } from '@mantine/core';
 
-import Breadcrumbs from '@/components/dashboard/Breadcrumbs';
-import Profile from '@/components/dashboard/Profile';
+import Breadcrumbs from '@/components/dashboard/Breadcrumbs/Breadcrumbs';
+import Profile from '@/components/dashboard/Header/Profile';
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher/ThemeSwitcher';
 import { createClient } from '@/lib/supabase/server';
 

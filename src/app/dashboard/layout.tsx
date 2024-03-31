@@ -1,10 +1,15 @@
 import { Flex } from '@mantine/core';
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
-import BottomNavigation from '@/components/dashboard/BottomNavigation';
-import Header from '@/components/dashboard/Header';
-import Sidebar from '@/components/dashboard/Sidebar';
+import BottomNavigation from '@/components/dashboard/BottomNavigation/BottomNavigation';
+import Header from '@/components/dashboard/Header/Header';
+import Sidebar from '@/components/dashboard/Sidebar/Sidebar';
 import { createClient } from '@/lib/supabase/server';
+
+export const metadata: Metadata = {
+  title: 'Dashboard | Fyscus',
+};
 
 const DashboardLayout = async ({
   children,
@@ -20,9 +25,9 @@ const DashboardLayout = async ({
   return (
     <Flex>
       <Sidebar />
-      <div className="w-full relative">
+      <div className="w-full h-dvh relative flex flex-col">
         <Header />
-        <main className="p-8 h-dvh">{children}</main>
+        <main className="p-8 flex-1">{children}</main>
         <BottomNavigation />
       </div>
     </Flex>

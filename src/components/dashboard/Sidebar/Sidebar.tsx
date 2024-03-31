@@ -8,8 +8,9 @@ import { useState } from 'react';
 import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 
 import Logo from '@/app/icon.png';
-import SidebarItem from '@/components/dashboard/SidebarItem';
 import menu from '@/constants/menu';
+
+import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(true);
