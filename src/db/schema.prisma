@@ -9,14 +9,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  image     String?  @db.Text()
-  authId    String   @unique @map("auth_id")
+  id              String   @id
+  name            String
+  email           String   @unique
+  image           String?  @db.Text()
   defaultCurrency Currency @default(IDR) @map("default_currency")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   accounts     Account[]
   categories   Category[]
@@ -62,16 +61,16 @@ enum TransactionCategoryType {
 }
 
 model Transaction {
-  id         String   @id @default(uuid())
-  amount     Decimal
-  note       String?  @db.Text
-  storedCurrency Currency @default(IDR) @map("stored_currency")
+  id               String   @id @default(uuid())
+  amount           Decimal
+  note             String?  @db.Text
+  storedCurrency   Currency @default(IDR) @map("stored_currency")
   exchangeRateUsed Decimal? @map("exchange_rate_used")
-  userId     String   @map("user_id")
-  accountId  String   @map("account_id")
-  categoryId String   @map("category_id")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  userId           String   @map("user_id")
+  accountId        String   @map("account_id")
+  categoryId       String   @map("category_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   user     User     @relation(fields: [userId], references: [id])
   account  Account  @relation(fields: [accountId], references: [id])

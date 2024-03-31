@@ -8,73 +8,51 @@ export const createUser = async (data: UserData) => {
       data,
     });
 
-    return { user, error: null };
+    return { user };
   } catch (error) {
-    return { user: null, error };
+    return { error };
   }
 };
 
-export const checkIfUserExists = async (data: { email: string }) => {
-  try {
-    const userAlreadyExists = await prisma.user.findUnique({
-      where: {
-        email: data.email,
-      },
-    });
-
-    return { userAlreadyExists, error: null };
-  } catch (error) {
-    return { userAlreadyExists: null, error };
-  }
-};
-
-export const getUserById = async (data: { id: string }) => {
+export const getUserById = async (id: string) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id: data.id,
+        id,
       },
     });
 
-    if (!user) {
-      return { user: null, error: 'User not found' };
-    }
-
-    return { user, error: null };
+    return { user };
   } catch (error) {
-    return { user: null, error };
+    return { error };
   }
 };
 
-export const getUserByAuthId = async (data: { authId: string }) => {
+export const getUserByEmail = async (email: string) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        authId: data.authId,
+        email,
       },
     });
 
-    if (!user) {
-      return { user: null, error: 'User not found' };
-    }
-
-    return { user, error: null };
+    return { user };
   } catch (error) {
-    return { user: null, error };
+    return { error };
   }
 };
 
-export const getAccounts = async (data: { userId: string }) => {
+export const getAccounts = async (userId: string) => {
   try {
     const accounts = await prisma.account.findMany({
       where: {
-        userId: data.userId,
+        userId,
       },
     });
 
-    return { accounts, error: null };
+    return { accounts };
   } catch (error) {
-    return { accounts: null, error };
+    return { error };
   }
 };
 
@@ -90,8 +68,8 @@ export const createAccount = async (data: AccountData) => {
       },
     });
 
-    return { account, error: null };
+    return { account };
   } catch (error) {
-    return { account: null, error };
+    return { error };
   }
 };

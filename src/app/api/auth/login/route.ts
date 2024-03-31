@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
 import { loginSchema } from '@/lib/zod/validations';
-import { checkIfUserExists } from '@/utils/prisma';
+import { getUserByEmail } from '@/utils/prisma';
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -20,17 +20,12 @@ export const POST = async (request: NextRequest) => {
     const { email, password } = body;
 
     // check if user exists
-    const { userAlreadyExists, error: checkError } = await checkIfUserExists({
-      email,
-    });
+    const { user, error: checkError } = await getUserByEmail(email);
     if (checkError) {
       return NextResponse.json({ error: checkError }, { status: 500 });
     }
-    if (!userAlreadyExists) {
-      return NextResponse.json(
-        { error: "User doesn't exists" },
-        { status: 400 },
-      );
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // sign in user
@@ -47,7 +42,7 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    return NextResponse.json({ user: data.user, session: data.session });
+    return NextResponse.json({ user, session: data.session });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }

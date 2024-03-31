@@ -2,7 +2,7 @@ import { type CookieOptions, createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { checkIfUserExists, createUser } from '@/utils/prisma';
+import { createUser, getUserByEmail } from '@/utils/prisma';
 
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);
@@ -40,20 +40,18 @@ export const GET = async (request: Request) => {
 
     // check if user already exists
     const email = data.user.email as string;
-    const { userAlreadyExists, error: checkError } = await checkIfUserExists({
-      email,
-    });
+    const { user, error: checkError } = await getUserByEmail(email);
     if (checkError) {
       return NextResponse.json({ error: checkError }, { status: 500 });
     }
-    if (!userAlreadyExists) {
+    if (!user) {
       // create user profile data if it doesn't exist yet
       const authId = data.user.id as string;
       const name = data.user.user_metadata.name;
       const { error: prismaError } = await createUser({
+        id: authId,
         name,
         email,
-        authId,
       });
 
       if (prismaError) {

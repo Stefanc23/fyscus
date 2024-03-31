@@ -1,21 +1,25 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { getUserByAuthId } from '@/utils/prisma';
+import { getUserById } from '@/utils/prisma';
+import { getUserByAccessToken } from '@/utils/supabase';
 
 export const GET = async (request: NextRequest) => {
   try {
-    const { searchParams } = new URL(request.url);
-    const authId = searchParams.get('authId') ?? '';
+    const accessToken =
+      request.headers.get('Authorization')?.split(' ')[1] ?? '';
 
-    if (!authId) {
+    const { data, error: supabaseError } =
+      await getUserByAccessToken(accessToken);
+
+    if (!data?.user || supabaseError) {
       return NextResponse.json(
-        { error: 'Auth ID parameter is required' },
-        { status: 400 },
+        { error: supabaseError?.message },
+        { status: supabaseError?.status },
       );
     }
 
-    const { user, error: prismaError } = await getUserByAuthId({ authId });
-    if (prismaError || !user) {
+    const { user, error: prismaError } = await getUserById(data.user.id);
+    if (!user || prismaError) {
       return NextResponse.json({ error: prismaError }, { status: 500 });
     }
 

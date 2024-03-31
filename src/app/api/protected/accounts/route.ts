@@ -2,12 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
 import { accountSchema } from '@/lib/zod/validations';
-import {
-  createAccount,
-  getAccounts,
-  getUserByAuthId,
-  getUserById,
-} from '@/utils/prisma';
+import { createAccount, getAccounts, getUserById } from '@/utils/prisma';
 import { verifyUserId } from '@/utils/supabase';
 
 export const GET = async (request: NextRequest) => {
@@ -28,16 +23,15 @@ export const GET = async (request: NextRequest) => {
 
     const authId = data.user.id;
 
-    const { user, error: prismaError } = await getUserByAuthId({
-      authId,
-    });
-    if (prismaError || !user) {
-      return NextResponse.json({ error: prismaError }, { status: 500 });
+    const { user, error: checkError } = await getUserById(authId);
+    if (checkError) {
+      return NextResponse.json({ error: checkError }, { status: 500 });
+    }
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { accounts, error: queryError } = await getAccounts({
-      userId: user.id,
-    });
+    const { accounts, error: queryError } = await getAccounts(user.id);
     if (queryError) {
       return NextResponse.json({ error: queryError }, { status: 500 });
     }
@@ -64,15 +58,16 @@ export const POST = async (request: NextRequest) => {
 
     const { name, balance, userId } = body;
 
-    const { user, error: prismaError } = await getUserById({
-      id: userId,
-    });
-    if (prismaError || !user) {
-      return NextResponse.json({ error: prismaError }, { status: 500 });
+    const { user, error: checkError } = await getUserById(userId);
+    if (checkError) {
+      return NextResponse.json({ error: checkError }, { status: 500 });
+    }
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const { successful, error: verificationError } = await verifyUserId(
-      user.authId,
+      user.id,
       accessToken,
     );
     if (!successful || verificationError) {

@@ -9,15 +9,11 @@ const Header = async () => {
   const supabase = createClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const {
     data: { session },
   } = await supabase.auth.getSession();
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/user?authId=${encodeURIComponent(user?.id ?? '')}`,
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/user`,
     {
       headers: {
         Authorization: `${session?.token_type} ${session?.access_token}`,

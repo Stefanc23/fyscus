@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
 import { registerSchema } from '@/lib/zod/validations';
-import { checkIfUserExists, createUser } from '@/utils/prisma';
+import { createUser, getUserByEmail } from '@/utils/prisma';
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -20,13 +20,12 @@ export const POST = async (request: NextRequest) => {
     const { name, email, password } = body;
 
     // check if user already exists
-    const { userAlreadyExists, error: checkError } = await checkIfUserExists({
-      email,
-    });
+    const { user: existingUser, error: checkError } =
+      await getUserByEmail(email);
     if (checkError) {
       return NextResponse.json({ error: checkError }, { status: 500 });
     }
-    if (userAlreadyExists) {
+    if (existingUser) {
       return NextResponse.json(
         { error: 'User already exists' },
         { status: 400 },
@@ -56,9 +55,9 @@ export const POST = async (request: NextRequest) => {
     // create user profile
     const authId = data.user?.id as string;
     const { user, error: prismaError } = await createUser({
+      id: authId,
       name,
       email,
-      authId,
     });
 
     if (prismaError) {
