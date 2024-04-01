@@ -2,7 +2,7 @@ import { type CookieOptions, createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { createUser, getUserByEmail } from '@/utils/prisma';
+import { createUser, getUserByEmail } from '@/models/User';
 
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);

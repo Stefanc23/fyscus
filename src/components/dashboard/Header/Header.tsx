@@ -16,12 +16,13 @@ const Header = async () => {
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/user`,
     {
       headers: {
-        Authorization: `${session?.token_type} ${session?.access_token}`,
+        Authorization: `Bearer ${session?.access_token}`,
       },
     },
   );
 
   const data = await response.json();
+
   const { name, image } = data.user;
 
   return (

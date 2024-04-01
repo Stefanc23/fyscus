@@ -1,18 +1,18 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { accountSchema } from '@/lib/zod/validations';
-import { createAccount, getAccounts } from '@/models/Account';
+import { categorySchema } from '@/lib/zod/validations';
+import { createCategory, getCategories } from '@/models/Category';
 
 export const GET = async (request: NextRequest) => {
   try {
     const userId = request.headers.get('Fyscus-User-Id') ?? '';
 
-    const { accounts, error: queryError } = await getAccounts(userId);
+    const { categories, error: queryError } = await getCategories(userId);
     if (queryError) {
       return NextResponse.json({ error: queryError }, { status: 500 });
     }
 
-    return NextResponse.json({ accounts });
+    return NextResponse.json({ categories });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
@@ -22,7 +22,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const body = await request.json();
 
-    const validation = accountSchema.safeParse(body);
+    const validation = categorySchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
         { error: validation.error.format() },
@@ -30,15 +30,16 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    const { name, balance, userId } = body;
+    const { name, type, icon, userId } = body;
 
     if (userId !== request.headers.get('Fyscus-User-Id') ?? '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { account, error } = await createAccount({
+    const { category, error } = await createCategory({
       name,
-      balance: parseInt(balance),
+      type,
+      icon,
       userId,
     });
 
@@ -46,7 +47,7 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json({ error }, { status: 500 });
     }
 
-    return NextResponse.json({ account });
+    return NextResponse.json({ category });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }

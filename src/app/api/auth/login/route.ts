@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
 import { loginSchema } from '@/lib/zod/validations';
-import { getUserByEmail } from '@/utils/prisma';
+import { getUserByEmail } from '@/models/User';
 
 export const POST = async (request: NextRequest) => {
   try {

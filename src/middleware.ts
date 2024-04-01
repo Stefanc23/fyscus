@@ -5,22 +5,38 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/api/protected')) {
-    const authorizationHeader = request.headers.get('Authorization') ?? null;
+    const headers = new Headers(request.headers);
+    const authorizationHeader = headers.get('Authorization') ?? null;
     if (!authorizationHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const [_, token] = authorizationHeader.split(' ');
+    const [tokenType, accessToken] = authorizationHeader.split(' ');
+
+    if (tokenType !== 'Bearer') {
+      return NextResponse.json(
+        { error: 'Invalid authorization header' },
+        { status: 400 },
+      );
+    }
+
     const supabase = createClient();
-
-    const { error } = await supabase.auth.getUser(token);
-
+    const { data, error } = await supabase.auth.getUser(accessToken);
     if (error) {
       return NextResponse.json(
         { error: error.message },
         { status: error.status },
       );
     }
+
+    headers.set('Fyscus-User-Id', data.user.id);
+    headers.delete('Authorization');
+
+    return NextResponse.next({
+      request: {
+        headers,
+      },
+    });
   }
 
   return await updateSession(request);

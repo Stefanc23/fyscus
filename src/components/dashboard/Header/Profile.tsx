@@ -38,8 +38,9 @@ const Profile = ({ name, image }: ProfileProps) => {
     if (!error) route.replace('/');
   };
 
-  const firstName = name.split(' ')[0];
-  const lastName = name.split(' ')[name.split(' ').length - 1];
+  const names = name.split(' ');
+  const firstName = names[0];
+  const lastName = names.length > 1 ? names[names.length - 1] : null;
 
   return (
     <Menu shadow="md" width="150px">

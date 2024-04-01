@@ -1,24 +1,12 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { getUserById } from '@/utils/prisma';
-import { getUserByAccessToken } from '@/utils/supabase';
+import { getUserById } from '@/models/User';
 
 export const GET = async (request: NextRequest) => {
   try {
-    const accessToken =
-      request.headers.get('Authorization')?.split(' ')[1] ?? '';
+    const userId = request.headers.get('Fyscus-User-Id') ?? '';
 
-    const { data, error: supabaseError } =
-      await getUserByAccessToken(accessToken);
-
-    if (!data?.user || supabaseError) {
-      return NextResponse.json(
-        { error: supabaseError?.message },
-        { status: supabaseError?.status },
-      );
-    }
-
-    const { user, error: prismaError } = await getUserById(data.user.id);
+    const { user, error: prismaError } = await getUserById(userId);
     if (!user || prismaError) {
       return NextResponse.json({ error: prismaError }, { status: 500 });
     }

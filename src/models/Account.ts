@@ -1,45 +1,12 @@
 import prisma from '@/lib/prisma/db';
-import type { AccountData } from '@/types/account';
-import type { UserData } from '@/types/user';
 
-export const createUser = async (data: UserData) => {
-  try {
-    const user = await prisma.user.create({
-      data,
-    });
-
-    return { user };
-  } catch (error) {
-    return { error };
-  }
-};
-
-export const getUserById = async (id: string) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    return { user };
-  } catch (error) {
-    return { error };
-  }
-};
-
-export const getUserByEmail = async (email: string) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    return { user };
-  } catch (error) {
-    return { error };
-  }
+export type AccountData = {
+  id?: string;
+  name: string;
+  balance: number;
+  userId: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export const getAccounts = async (userId: string) => {

@@ -22,6 +22,16 @@ const accountValidations = {
   userId: z.string().length(36),
 };
 
+const categoryValidations = {
+  name: z
+    .string()
+    .min(1, { message: 'Name is required' })
+    .max(191, { message: 'Name can only be up to 191 characters long' }),
+  type: z.enum(['EXPENSE', 'INCOME']),
+  icon: z.string().nullable(),
+  userId: z.string().length(36),
+};
+
 // schemas
 export const registerSchema = z
   .object({
@@ -37,3 +47,5 @@ export const registerSchema = z
 export const loginSchema = z.object(authValidations);
 
 export const accountSchema = z.object(accountValidations);
+
+export const categorySchema = z.object(categoryValidations);
