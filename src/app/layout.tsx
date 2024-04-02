@@ -1,8 +1,8 @@
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import type { Metadata } from 'next';
 
-import './globals.css';
 import '@mantine/core/styles.css';
+import './globals.css';
 
 import theme from '@/lib/mantine/theme';
 
