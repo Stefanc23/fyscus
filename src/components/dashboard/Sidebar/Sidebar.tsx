@@ -43,6 +43,7 @@ const Sidebar = () => {
           alt="logo"
           width={expanded ? 200 : 20}
           height={expanded ? 200 : 20}
+          priority
         />
       </Link>
       <Divider my="xl" />

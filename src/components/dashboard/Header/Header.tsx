@@ -1,33 +1,16 @@
 import { Group } from '@mantine/core';
 
-import Breadcrumbs from '@/components/dashboard/Breadcrumbs/Breadcrumbs';
 import Profile from '@/components/dashboard/Header/Profile';
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher/ThemeSwitcher';
-import { createClient } from '@/lib/supabase/server';
+import { fetchUserData } from '@/utils/fetchData';
 
 const Header = async () => {
-  const supabase = createClient();
-
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/user`,
-    {
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`,
-      },
-    },
-  );
-
-  const data = await response.json();
-
-  const { name, image } = data.user;
+    user: { name, image },
+  } = await fetchUserData();
 
   return (
-    <header className="h-14 px-8 flex justify-between items-center">
-      <Breadcrumbs />
+    <header className="h-14 px-8 flex justify-end items-center">
       <Group gap="xs">
         <ThemeSwitcher />
         <Profile name={name} image={image} />
