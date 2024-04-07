@@ -1,8 +1,9 @@
 import { ActionIcon, Button, Flex, Paper, Text, Tooltip } from '@mantine/core';
 import Link from 'next/link';
-import { MdAdd, MdDelete, MdModeEdit } from 'react-icons/md';
+import { MdAdd, MdModeEdit } from 'react-icons/md';
 
 import Datatable from '@/components/dashboard/Datatable/Datatable';
+import DeleteButton from '@/components/dashboard/DeleteButton/DeleteButton';
 import { AccountData } from '@/models/Account';
 import { fetchAccountData } from '@/utils/fetchData';
 import { formatCurrency } from '@/utils/formatCurrency';
@@ -12,6 +13,7 @@ const Account = async () => {
 
   const data = accounts.map(({ id, name, balance }: AccountData) => {
     const editUrl = '/dashboard/accounts/' + id + '/edit';
+    const deleteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/accounts/${id}`;
 
     const actions = (
       <Flex gap="xs">
@@ -21,9 +23,11 @@ const Account = async () => {
           </ActionIcon>
         </Tooltip>
         <Tooltip label="Delete Account" position="bottom">
-          <ActionIcon bg="red">
-            <MdDelete />
-          </ActionIcon>
+          <DeleteButton
+            type="accounts"
+            confirmationText={`Are you sure you want to delete <b>${name}</b> account?`}
+            deleteUrl={deleteUrl}
+          />
         </Tooltip>
       </Flex>
     );

@@ -82,7 +82,7 @@ export const PUT = async (
     );
 
     if (updateError) {
-      return NextResponse.json({ updateError }, { status: 500 });
+      return NextResponse.json({ error: updateError }, { status: 500 });
     }
 
     return NextResponse.json({ updatedAccount });
@@ -115,7 +115,7 @@ export const DELETE = async (
       await deleteAccount(accountId);
 
     if (deleteError) {
-      return NextResponse.json({ deleteError }, { status: 500 });
+      return NextResponse.json({ error: deleteError }, { status: 500 });
     }
 
     return NextResponse.json({ deletedAccount });
