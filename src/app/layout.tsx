@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import '@mantine/core/styles.css';
 import './globals.css';
 
+import RouteLoader from '@/components/ui/RouteLoader';
 import theme from '@/lib/mantine/theme';
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ const RootLayout = ({
       </head>
       <body suppressHydrationWarning={true}>
         <MantineProvider theme={theme} defaultColorScheme="dark">
-          {children}
+          <RouteLoader>{children}</RouteLoader>
         </MantineProvider>
       </body>
     </html>
