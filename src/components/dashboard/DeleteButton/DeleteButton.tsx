@@ -41,9 +41,9 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
 
     const data = await response.json();
 
-    if (data.deletedAccount) {
+    if (!data.error) {
       close();
-      revalidateCache('accounts');
+      revalidateCache(type);
     }
 
     setIsLoading(false);

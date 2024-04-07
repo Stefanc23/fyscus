@@ -1,9 +1,14 @@
 import prisma from '@/lib/prisma/db';
 
+export enum CategoryTypes {
+  EXPENSE = 'EXPENSE',
+  INCOME = 'INCOME',
+}
+
 export type CategoryData = {
   id?: string;
   name: string;
-  type: 'EXPENSE' | 'INCOME';
+  type: CategoryTypes;
   icon?: string;
   userId: string;
   createdAt?: string;

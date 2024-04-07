@@ -45,7 +45,7 @@ export const fetchAccountData = async () => {
           Authorization: `Bearer ${session?.access_token}`,
         },
         next: {
-          tags: ['account'],
+          tags: ['accounts'],
         },
       },
     );
@@ -85,6 +85,66 @@ export const fetchOneAccountData = async (id: string) => {
     const account = data.account;
 
     return { account };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const fetchCategoryData = async () => {
+  try {
+    const supabase = createClient();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/categories`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        next: {
+          tags: ['categories'],
+        },
+      },
+    );
+
+    const data = await response.json();
+
+    const categories = data.categories;
+
+    return { categories };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const fetchOneCategoryData = async (id: string) => {
+  try {
+    const supabase = createClient();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/protected/categories/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        next: {
+          tags: [id],
+        },
+      },
+    );
+
+    const data = await response.json();
+
+    const category = data.category;
+
+    return { category };
   } catch (error) {
     return { error };
   }
